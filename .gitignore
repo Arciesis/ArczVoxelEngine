@@ -1,0 +1,4 @@
+.zig-cache/
+.zig-out/
+libroot.a
+libroot.a.o

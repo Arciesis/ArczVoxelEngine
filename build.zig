@@ -9,7 +9,7 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     const lib = b.addStaticLibrary(.{
-        .name = "vulkan_zig",
+        .name = "ArczVoxelEngine",
         .root_source_file = b.path("src/root.zig"),
         .target = target,
         .optimize = optimize,
@@ -18,7 +18,7 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(lib);
 
     const exe = b.addExecutable(.{
-        .name = "vulkan_zig",
+        .name = "ArczVoxelEngine",
         .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,

@@ -17,20 +17,20 @@ pub fn Vec2(comptime T: type) type {
             const nx = self.vec[0] + other.vec[0];
             const ny = self.vec[1] + other.vec[1];
 
-            return Vec2(T).init(nx, ny);
+            return Self.init(nx, ny);
         }
 
         pub fn sub(self: Self, other: Self) Self {
             const nx = if (other.vec[0] > self.vec[0]) 0 else self.vec[0] - other.vec[0];
             const ny = if (other.vec[1] > self.vec[1]) 0 else self.vec[1] - other.vec[1];
 
-            return Vec2(T).init(nx, ny);
+            return Self.init(nx, ny);
         }
 
         pub fn scalar_mul(self: Self, scalar: T) Self {
             const nx = self.vec[0] * scalar;
             const ny = self.vec[1] * scalar;
-            return Vec2(T).init(nx, ny);
+            return Self.init(nx, ny);
         }
 
         pub fn scalar_div(self: Self, scalar: T) !Self {

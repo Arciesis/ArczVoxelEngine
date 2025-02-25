@@ -1,8 +1,5 @@
 const std = @import("std");
-
-pub const VectorError = error{
-    divByZero,
-};
+const VectorError = @import("vector.zig").VectorError;
 
 /// Internal representation of a 2-Vector
 pub fn Vec2(comptime T: type) type {

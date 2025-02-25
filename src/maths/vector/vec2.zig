@@ -8,36 +8,31 @@ pub const VectorError = error{
 pub fn Vec2(comptime T: type) type {
     return struct {
         const Self = @This();
-        /// the first value of the vector
-        x: T,
-
-        /// The second value of the vector
-        y: T,
+        vec: @Vector(2, T),
 
         pub fn init(x: T, y: T) Self {
             return Self{
-                .x = x,
-                .y = y,
+                .vec = @Vector(2, T){ x, y },
             };
         }
 
         pub fn add(self: Self, other: Self) Self {
-            const nx = self.x + other.x;
-            const ny = self.y + other.y;
+            const nx = self.vec[0] + other.vec[0];
+            const ny = self.vec[1] + other.vec[1];
 
             return Vec2(T).init(nx, ny);
         }
 
         pub fn sub(self: Self, other: Self) Self {
-            const nx = if (other.x > self.x) 0 else self.x - other.x;
-            const ny = if (other.y > self.y) 0 else self.y - other.y;
+            const nx = if (other.vec[0] > self.vec[0]) 0 else self.vec[0] - other.vec[0];
+            const ny = if (other.vec[1] > self.vec[1]) 0 else self.vec[1] - other.vec[1];
 
             return Vec2(T).init(nx, ny);
         }
 
         pub fn scalar_mul(self: Self, scalar: T) Self {
-            const nx = self.x * scalar;
-            const ny = self.y * scalar;
+            const nx = self.vec[0] * scalar;
+            const ny = self.vec[1] * scalar;
             return Vec2(T).init(nx, ny);
         }
 
@@ -47,9 +42,9 @@ pub fn Vec2(comptime T: type) type {
             }
 
             if (@typeInfo(T) == .Float) {
-                return Self.init(self.x / scalar, self.y / scalar);
+                return Self.init(self.vec[0] / scalar, self.vec[1] / scalar);
             } else {
-                return Self.init(@divTrunc(self.x, scalar), @divTrunc(self.y, scalar));
+                return Self.init(@divTrunc(self.vec[0], scalar), @divTrunc(self.vec[1], scalar));
             }
         }
 
@@ -58,16 +53,16 @@ pub fn Vec2(comptime T: type) type {
 
             switch (prt) {
                 .Float => {
-                    const x_norm = @abs(self.x);
-                    const y_norm = @abs(self.y);
+                    const x_norm = @abs(self.vec[0]);
+                    const y_norm = @abs(self.vec[1]);
                     const x_squared = x_norm * x_norm;
                     const y_squared = y_norm * y_norm;
 
                     return @sqrt(x_squared + y_squared);
                 },
                 .Int => {
-                    const x1: f128 = @floatFromInt(self.x);
-                    const y1: f128 = @floatFromInt(self.y);
+                    const x1: f128 = @floatFromInt(self.vec[0]);
+                    const y1: f128 = @floatFromInt(self.vec[1]);
 
                     const x_squared = @abs(x1) * @abs(x1);
                     const y_squared = @abs(y1) * @abs(y1);
@@ -78,7 +73,7 @@ pub fn Vec2(comptime T: type) type {
         }
 
         pub fn dot(self: Self, other: Self) T {
-            return self.x * other.x + self.y * other.y;
+            return self.vec[0] * other.vec[0] + self.vec[1] * other.vec[1];
         }
 
         pub fn proj(self: Self, other: Self) Self {
@@ -97,8 +92,8 @@ test "vec2u32 add" {
     const v2 = Vec2(f32).init(65.0, 65.0);
     const res = v1.add(v2);
 
-    try std.testing.expect(res.x == 129.0);
-    try std.testing.expect(res.y == 129.0);
+    try std.testing.expect(res.vec[0] == 129.0);
+    try std.testing.expect(res.vec[1] == 129.0);
 }
 
 test "vec2u32 sub" {
@@ -106,8 +101,8 @@ test "vec2u32 sub" {
     const v2 = Vec2(u32).init(65, 65);
     const res = v1.sub(v2);
 
-    try std.testing.expect(res.x == 0);
-    try std.testing.expect(res.y == 0);
+    try std.testing.expect(res.vec[0] == 0);
+    try std.testing.expect(res.vec[1] == 0);
 }
 
 test "vec2f32 scalar mul" {
@@ -115,8 +110,8 @@ test "vec2f32 scalar mul" {
     const fscalar = 512.0;
 
     const res = v1.scalar_mul(fscalar);
-    try std.testing.expect(res.x == 50521600.0);
-    try std.testing.expect(res.y == -44823040);
+    try std.testing.expect(res.vec[0] == 50521600.0);
+    try std.testing.expect(res.vec[1] == -44823040);
 }
 
 test "vec2u32 scalar div by zero" {
@@ -140,8 +135,8 @@ test "vec2u32 scalar div" {
     const scalar = 4.0;
     const res = try v1.scalar_div(scalar);
 
-    try std.testing.expect(res.x == 16.0);
-    try std.testing.expect(res.y == 16.0);
+    try std.testing.expect(res.vec[0] == 16.0);
+    try std.testing.expect(res.vec[1] == 16.0);
 }
 
 test "Vec2i32 norm2" {
